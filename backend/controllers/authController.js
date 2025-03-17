@@ -15,14 +15,11 @@ export const register = async (req, res) => {
         if (existingUser) {
             return res.json({ success: false, message: 'User already exists' });
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const user = new userModel({ name, email, password: hashedPassword });
         await user.save();
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
 
         //sending welcome email
@@ -33,7 +30,6 @@ export const register = async (req, res) => {
             text: `Hello ${name}, welcome to our website. Your account has been created with email id: ${email}.`
         }
         await transporter.sendMail(mailOptions);
-
         return res.json({ success: true, message: "User logged in successfully." });
 
     } catch (error) {
@@ -47,6 +43,7 @@ export const login = async (req, res) => {
     if (!email || !password) {
         return res.json({ success: false, message: "Email and Password are required." })
     }
+
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -61,7 +58,6 @@ export const login = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
-
         return res.json({ success: true, message: "User logged in successfully." });
 
     } catch (error) {
@@ -75,7 +71,6 @@ export const logout = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
         });
-
         return res.json({ success: true, message: 'Logged out successfully' });
 
     } catch (error) {
@@ -105,7 +100,6 @@ export const sendVerifyOtp = async (req, res) => {
             text: `Welcome to our website. Your account verification OTP is ${otp}. Verify your account using this OTP.`
         }
         await transporter.sendMail(mailOption);
-
         return res.json({ success: true, message: "Verification OTP sent to your Email" });
 
     } catch (error) {
@@ -131,7 +125,6 @@ export const verifyEmail = async (req, res) => {
         if (user.verifyOtpExpiredAt < Date.now()) {
             return res.json({ success: false, message: "OTP expired" });
         }
-
         user.isAccountVerified = true;
         user.verifyOtp = '';
         user.verifyOtpExpiredAt = 0;
@@ -178,9 +171,7 @@ export const sendResetOtp = async (req, res) => {
             text: `Your password reset OTP is ${otp}. This OTP is valid for 5 minutes. Use this OTP to reset your password.`
         }
         await transporter.sendMail(mailOption);
-
         return res.json({ success: true, message: "OTP sent to your Email for Reset the Password" });
-
 
     } catch (error) {
         return res.json({ success: false, message: error.message });
@@ -191,18 +182,18 @@ export const sendResetOtp = async (req, res) => {
 export const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
-    if (!email || !otp || !newPassword){
-        return res.json({ success: false , message: 'Email, OTP, and New Password are required'})
+    if (!email || !otp || !newPassword) {
+        return res.json({ success: false, message: 'Email, OTP, and New Password are required' })
     }
-    try{
+    try {
         const user = await userModel.findOne({ email });
-        if (!user){
+        if (!user) {
             return res.json({ success: false, message: 'User not found' });
         }
-        if (user.resetOtp === '' || user.resetOtp !== otp){
+        if (user.resetOtp === '' || user.resetOtp !== otp) {
             return res.json({ success: false, message: 'Invalid OTP' });
         }
-        if (user.resetOtpExpiredAt < Date.now()){
+        if (user.resetOtpExpiredAt < Date.now()) {
             return res.json({ success: false, message: 'OTP expired' });
         }
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -211,10 +202,9 @@ export const resetPassword = async (req, res) => {
         user.resetOtpExpiredAt = 0;
 
         await user.save();
-
         return res.json({ success: true, message: 'Password reset successfully' });
 
-    } catch (error){
-        return res.json({ success: false, message: error.message})
+    } catch (error) {
+        return res.json({ success: false, message: error.message })
     }
 };

@@ -18,6 +18,7 @@ app.use(cors({ credentials: true }));
 app.get('/', (req, res) => {
   res.send('API working now');
 });
+
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 
