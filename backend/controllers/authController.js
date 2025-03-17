@@ -119,12 +119,12 @@ export const verifyEmail = async (req, res) => {
         return res.json({ success: false, message: "Missing Details" });
     }
 
-    try{
+    try {
         const user = await userModel.findById(userId);
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
-        if(user.verifyOtp === '' || user.verifyOtp !== otp) {
+        if (user.verifyOtp === '' || user.verifyOtp !== otp) {
             return res.json({ success: false, message: "Invalid OTP" });
         }
 
@@ -142,4 +142,13 @@ export const verifyEmail = async (req, res) => {
     } catch (error) {
         return res.json({ success: false, message: error.message });
     };
+}
+
+//CHECK IF USER IS AUTHENTICATED
+export const isAuthenticated = async (re, res) => {
+    try {
+        return res.json({ success: true, message: "User is Authenticated" });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
 }
