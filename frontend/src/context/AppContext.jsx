@@ -9,12 +9,12 @@ export const AppContextProvider = (props) => {
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [isLoggedin, setIsLoggedin] = useState(false);
-    const [userData, setuserData] = useState(false);
+    const [userData, setUserData] = useState(false);
 
     const getAuthState = async () => {
         try {
-            const {data} = await axios.get(backendUrl+'/api/auth/is-auth');
-            if(data.success){
+            const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
+            if (data.success) {
                 setIsLoggedin(true)
                 getUserData()
             }
@@ -26,20 +26,20 @@ export const AppContextProvider = (props) => {
     const getUserData = async () => {
         try {
             const { data } = await axios.get(backendUrl + '/api/user/data');
-            data.success ? setuserData(data.userData) : toast.error(data.message)
+            data.success ? setUserData(data.userData) : toast.error(data.message)
         } catch (error) {
             toast.error(error.message);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getAuthState();
     })
 
     const value = {
         backendUrl,
         isLoggedin, setIsLoggedin,
-        userData, setuserData,
+        userData, setUserData,
         getUserData
     }
     return (
