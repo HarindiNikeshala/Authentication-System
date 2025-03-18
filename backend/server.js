@@ -12,7 +12,7 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 //API ENDPOINTS
 app.get('/', (req, res) => {
