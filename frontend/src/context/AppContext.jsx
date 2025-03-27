@@ -35,10 +35,8 @@ export const AppContextProvider = (props) => {
     }
 
     useEffect(() => {
-        console.log("Executed")
-
         getAuthState();
-    },[])
+    }, [])
 
     const value = {
         backendUrl,

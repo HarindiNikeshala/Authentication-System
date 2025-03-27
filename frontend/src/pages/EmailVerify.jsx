@@ -7,10 +7,10 @@ import { toast } from 'react-toastify';
 import { getUserData } from '../../../backend/controllers/userController';
 
 const EmailVerify = () => {
-    const navigate = useNavigate();
-    
 
     axios.defaults.withCredentials = true;
+    
+    const navigate = useNavigate();
     const { backendUrl, isLoggedin, userData } = useContext(AppContent);
     const inputRefs = React.useRef([]);
 
@@ -54,7 +54,7 @@ const EmailVerify = () => {
         }
     }
 
-    useEffect(()=> {
+    useEffect(() => {
         isLoggedin && userData && userData.isAccountVerified && navigate('/');
     }, [isLoggedin, userData, navigate])
 
